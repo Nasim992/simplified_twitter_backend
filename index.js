@@ -17,6 +17,7 @@ const uri = "mongodb+srv://simplified_twitter:simplified_twitter@cluster0.5utuw.
 const client = new MongoClient(uri, { useNewUrlParser: true,useUnifiedTopology: true });
 
 client.connect(err => {
+
   const collection = client.db("simplified_twitter").collection("posts");
   // perform actions on the collection object
   console.log("database connected");
@@ -28,6 +29,7 @@ client.connect(err => {
     collection.insertOne({ username ,fullname })
   })   
   // Registration 
+
 // get Registration data form database  
   app.get('/Registerdata',(req,res)=>{
     collection.find({})
@@ -43,8 +45,10 @@ const collectiontweets = client.db("simplified_twitter").collection("tweets");
 // Insert tweets to tweets collection
   app.post('/tweet/:id',(req,res)=> {
     const userid = req.params.id;
+    const username= req.body.username;
+    const fullname=req.body.fullname;
     const tweets = req.body.tweet_text;
-    collectiontweets.insertOne({ userid ,tweets,"status":1 })
+    collectiontweets.insertOne({ userid ,username,fullname,tweets,"status":1 })
   })  
 // Insert Tweets to tweets collection
 
@@ -56,7 +60,37 @@ app.get('/tweetdata',(req,res)=>{
 }) 
 });
 // Show Tweets as a post 
+
+const collectionfollower = client.db("simplified_twitter").collection("follower");
+
+// Insert Follower  to database  
+
+app.post('/follower',(req,res)=> { 
+  const usernameMain = req.body.usernameMain;
+  const followerid = req.body._id;
+  const followerusername = req.body.username;
+  const followerfullname = req.body.fullname;
+  collectionfollower.insertOne({ usernameMain,followerid,followerusername,followerfullname})
+})   
+ 
+// Insert Follower  to database 
+
+
+// find follower to the database 
+app.get('/findfollower',(req,res)=>{
+  collectionfollower.find({})
+  .toArray((err,document)=>{
+    res.send(document) 
+}) 
+});
+// find follower to the database 
+
+
+
+
+
 })
+
 
 app.get('/', (req, res) => {
   res.send('Hello World!')
