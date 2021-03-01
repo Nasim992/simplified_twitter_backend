@@ -1,5 +1,6 @@
 const express = require('express');
 const cors = require('cors');
+const ObjectId = require('mongodb').ObjectId;
 const bodyParser = require('body-parser');
 const MongoClient = require('mongodb').MongoClient;
 
@@ -26,7 +27,8 @@ client.connect(err => {
   app.post('/Register',(req,res)=> { 
     const username = req.body.username;
     const fullname = req.body.fullname;
-    collection.insertOne({ username ,fullname })
+    const status = 1;
+    collection.insertOne({ username ,fullname,status })
   })   
   // Registration 
 
@@ -38,6 +40,22 @@ client.connect(err => {
   }) 
 });
 // Get Registration data form database 
+
+// Update status 
+
+app.put('/updatestatus/:id',(req,res)=>{
+
+  collection.findOneAndUpdate({
+    _id:ObjectId(req.params.id)
+  },
+  {"$set":{status:req.body.status}})
+
+})
+
+
+// Update Status 
+
+
 
 // New collection for tweets 
 const collectiontweets = client.db("simplified_twitter").collection("tweets");
@@ -82,21 +100,17 @@ app.get('/findfollower',(req,res)=>{
   .toArray((err,document)=>{
     res.send(document) 
 }) 
-}); 
+}) 
 // find follower to the database 
 
 // Delete follower in Database 
 app.post('/deletefollower', (req, res) => {
   collectionfollower.findOneAndDelete({ usernameMain:req.body.usernameMain,followerusername:req.body.username})
       .then(result => {
-      // console.log(result)
+      console.log(result)
   })
-})
+});
 // Delete follower in Database
-
-
-
-
 
 
 })
