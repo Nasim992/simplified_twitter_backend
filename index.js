@@ -82,8 +82,18 @@ app.get('/findfollower',(req,res)=>{
   .toArray((err,document)=>{
     res.send(document) 
 }) 
-});
+}); 
 // find follower to the database 
+
+// Delete follower in Database 
+app.post('/deletefollower', (req, res) => {
+  collectionfollower.findOneAndDelete({ usernameMain:req.body.usernameMain,followerusername:req.body.username})
+      .then(result => {
+      // console.log(result)
+  })
+})
+// Delete follower in Database
+
 
 
 
